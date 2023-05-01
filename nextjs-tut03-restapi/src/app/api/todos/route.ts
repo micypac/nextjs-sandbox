@@ -38,3 +38,27 @@ export async function POST(request: Request) {
 
   return NextResponse.json(newTodo);
 }
+
+export async function DELETE(request: Request) {
+  const { id }: Partial<Todo> = await request.json();
+
+  console.log(id);
+
+  if (!id) {
+    return NextResponse.json({
+      message: "Todo id not found",
+    });
+  }
+
+  await fetch(`${SOURCE_URL}/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "API-Key": API_KEY,
+    },
+  });
+
+  return NextResponse.json({
+    message: `Todo ${id} deleted`,
+  });
+}
