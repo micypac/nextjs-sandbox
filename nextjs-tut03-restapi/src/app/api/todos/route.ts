@@ -62,3 +62,30 @@ export async function DELETE(request: Request) {
     message: `Todo ${id} deleted`,
   });
 }
+
+export async function PUT(request: Request) {
+  const { userId, id, title, completed }: Todo = await request.json();
+
+  if (!userId || !id || !title || typeof completed !== "boolean") {
+    return NextResponse.json({
+      message: "Required data are missing",
+    });
+  }
+
+  const res = await fetch(`${SOURCE_URL}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "API-Key": API_KEY,
+    },
+    body: JSON.stringify({
+      userId,
+      title,
+      completed,
+    }),
+  });
+
+  const updatedTodo: Todo = await res.json();
+
+  return NextResponse.json(updatedTodo);
+}
